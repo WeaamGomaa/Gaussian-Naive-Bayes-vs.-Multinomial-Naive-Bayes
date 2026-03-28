@@ -8,6 +8,7 @@ class GaussianNaiveBayes:
         self.vars = None
         self.priors = None
         self.classes = None
+        self.class_probs = None
 
     def fit(self, X, y):
         # Convert X and y to numpy arrays
@@ -46,8 +47,9 @@ class GaussianNaiveBayes:
         X = np.array(X)
         predictions = []
 
+        self.class_probs = []
         for sample in X:
-            class_probs = {}
+            probs = {}
             for cls in self.classes:
                 if use_log:
                     total_prob =  np.log(self.priors[cls])
@@ -65,18 +67,26 @@ class GaussianNaiveBayes:
                     else:
                         total_prob *= self.calculate_likelihood(feature_value, mean, var)
 
-                class_probs[cls] = total_prob
+                probs[cls] = total_prob
+
+            # Store the probabilities of each class for each sample
+            self.class_probs.append(probs)
 
             # Get the class with the highest probability
-            best_class = max(class_probs, key=class_probs.get)
+            best_class = max(probs, key=probs.get)
             predictions.append(best_class)
         return predictions
 
-# Dummy data
-X = [[1, 2], [3, 4], [5, 6]]
-y = ['A', 'B', 'A']
-X_test = [[7, 8]]
-y_test = ['A']
-model = GaussianNaiveBayes()
-model.fit(X, y)
-model.predict(X_test)
+    def predict_prob(self, X, use_log=True):
+        X = np.array(X)
+        self.predict(X, use_log)
+        result = []
+        for probs in self.class_probs:
+            # Convert log probs back to real probs before normalizing
+            if use_log:
+                exp_probs = {cls: np.exp(prob) for cls, prob in probs.items()}
+                probs = exp_probs
+            normalized = {cls: prob / sum(probs.values()) for cls, prob in probs.items()}
+            result.append(normalized)
+        return result
+
