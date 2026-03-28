@@ -16,13 +16,11 @@ class GaussianNaiveBayes:
 
         # Extract classes
         self.classes = np.unique(y)
-        print(self.classes)
 
         # Compute class priors
         self.priors = {}
         for cls in self.classes:
             self.priors[cls] = np.sum(y == cls) / len(y)
-        print(self.priors)
 
         # Compute mean and variance per feature per class
         self.means = {}
@@ -31,8 +29,6 @@ class GaussianNaiveBayes:
             X_cls = X[y == cls]  # Filter data for the current class
             self.means[cls] = [utils.compute_mean(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
             self.vars[cls] = [utils.compute_var(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
-        print(self.means)
-        print(self.vars)
 
     def calculate_likelihood(self, x, mean, var):
         # Calculate the probability of a data point under Gaussian distribution
@@ -63,23 +59,17 @@ class GaussianNaiveBayes:
                     feature_value = sample[i]
                     mean = self.means[cls][i]
                     var = self.vars[cls][i]
-                    print("Feature value: ", feature_value)
-                    print("Mean: ", mean)
-                    print("Variance: ", var)
 
                     if use_log:
                         total_prob += self.calculate_log_likelihood(feature_value, mean, var)
                     else:
                         total_prob *= self.calculate_likelihood(feature_value, mean, var)
-                    print("Total probability: ", total_prob)
 
                 class_probs[cls] = total_prob
 
             # Get the class with the highest probability
             best_class = max(class_probs, key=class_probs.get)
             predictions.append(best_class)
-            print(f"The class with the highest probability is: {best_class}")
-
         return predictions
 
 # Dummy data
