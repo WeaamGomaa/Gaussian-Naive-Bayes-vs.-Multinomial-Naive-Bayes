@@ -24,7 +24,7 @@ class GaussianNaiveBayes:
             self.priors[cls] = np.sum(y == cls) / len(y)
         print(self.priors)
 
-        # Compute mean and variance for each feature per class
+        # Compute mean and variance per feature per class
         self.means = {}
         self.vars = {}
         for cls in self.classes:
