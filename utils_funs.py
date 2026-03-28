@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def compute_mean(x):
     return sum(x) / len(x)
 
