@@ -41,7 +41,11 @@ class GaussianNaiveBayes:
         exponent = np.exp(-((x - mean) ** 2) / (2 * (var + eps)))
         return coefficient * exponent
 
-    def predict(self, X):
+    def calculate_log_likelihood(self, x, mean, var):
+        eps = 1e-9
+        return -0.5 * np.log(2 * np.pi * (var + eps)) - (0.5 * ((x - mean) ** 2) / (var + eps))
+
+    def predict(self, X, use_log=True):
         # Convert the test sample to a numpy array
         X = np.array(X)
         predictions = []
@@ -49,7 +53,10 @@ class GaussianNaiveBayes:
         for sample in X:
             class_probs = {}
             for cls in self.classes:
-                total_prob = self.priors[cls]
+                if use_log:
+                    total_prob =  np.log(self.priors[cls])
+                else:
+                    total_prob = self.priors[cls]
 
                 # Multiply by the likelihood of each feature
                 for i in range(len(sample)):
@@ -60,7 +67,10 @@ class GaussianNaiveBayes:
                     print("Mean: ", mean)
                     print("Variance: ", var)
 
-                    total_prob *= self.calculate_likelihood(feature_value, mean, var)
+                    if use_log:
+                        total_prob += self.calculate_log_likelihood(feature_value, mean, var)
+                    else:
+                        total_prob *= self.calculate_likelihood(feature_value, mean, var)
                     print("Total probability: ", total_prob)
 
                 class_probs[cls] = total_prob
