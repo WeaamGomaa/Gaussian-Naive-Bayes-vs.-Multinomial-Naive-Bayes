@@ -1,5 +1,5 @@
 import numpy as np
-import utils
+import utils_funs
 
 
 class GaussianNaiveBayes:
@@ -28,8 +28,8 @@ class GaussianNaiveBayes:
         self.vars = {}
         for cls in self.classes:
             X_cls = X[y == cls]  # Filter data for the current class
-            self.means[cls] = [utils.compute_mean(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
-            self.vars[cls] = [utils.compute_var(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
+            self.means[cls] = [utils_funs.compute_mean(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
+            self.vars[cls] = [utils_funs.compute_var(X_cls[:, feature]) for feature in range(X_cls.shape[1])]
 
     def calculate_likelihood(self, x, mean, var):
         # Calculate the probability of a data point under Gaussian distribution
