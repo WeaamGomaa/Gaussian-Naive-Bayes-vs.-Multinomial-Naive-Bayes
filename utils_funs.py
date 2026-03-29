@@ -10,4 +10,6 @@ def compute_var(x):
 
 
 def compute_accuracy(y_actual, y_predicted):
-    return np.sum(y_actual == y_predicted) / len(y_actual)
+    y_actual = np.array(y_actual)
+    y_predicted = np.array(y_predicted)
+    return (np.sum(y_actual == y_predicted) / len(y_actual)) * 100
